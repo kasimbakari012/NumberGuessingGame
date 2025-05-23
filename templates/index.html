@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Guessing Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<script>document.addEventListener("DOMContentLoaded", function() {
+    const guessInput = document.getElementById("guessInput");
+    const message = document.getElementById("message");
+
+    guessInput.addEventListener("input", function() {
+        guessInput.style.borderColor = "black";  // Reset border color when typing
+    });
+
+    if (message.innerText.trim() !== "") {
+        message.style.color = "green";  // Change color when correct
+        message.classList.add("bounce");
+    }
+});
+</script>
+<style>body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    color: white;
+}
+
+.container {
+    width: 50%;
+    margin: auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    margin-top: 50px;
+    color: black;
+}
+
+input {
+    padding: 10px;
+    font-size: 16px;
+    margin: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background: green;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background: darkgreen;
+}
+
+.message {
+    font-size: 20px;
+    font-weight: bold;
+    color: red;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.leaderboard {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+}
+
+.leaderboard ul {
+    list-style: none;
+    padding: 0;
+}
+
+.leaderboard li {
+    font-size: 18px;
+    padding: 5px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+</style>
+<body>
+    <div class="container">
+        <h1>🎯 Guess the Number!</h1>
+        
+        <form method="POST" action="/set_name">
+            <input type="text" name="player_name" placeholder="Enter your name" required>
+            <button type="submit">Start Game</button>
+        </form>
+        
+        <p>Enter a number between 1 and 100:</p>
+        <form method="POST">
+            <input type="text" name="guess" id="guessInput" required>
+            <button type="submit">Submit</button>
+        </form>
+
+        <p id="message" class="message">{{ message }}</p>
+        <p>Attempts: <span id="attempts">{{ attempts }}</span></p>
+
+        {% if game_over %}
+    <h3>🎊 Do you want to play again?</h3>
+    <form action="/" method="get">
+        <button type="submit">Play Again</button>
+    </form>
+{% endif %}
+
+
+        <div class="leaderboard">
+            <h2>🏆 Leaderboard</h2>
+            <ul>
+                {% for player in leaderboard %}
+                    <li>{{ player[0] }} - {{ player[1] }} attempts</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
